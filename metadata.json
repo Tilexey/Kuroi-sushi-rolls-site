@@ -1,0 +1,6 @@
+{
+  "name": "KUROI SUSHI — Fresh Handcrafted Rolls & Delivery",
+  "description": "Artisanal Japanese sushi & rolls made to order. Browse the menu, customize rolls, and order delivery or pickup from Kuroi Sushi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
