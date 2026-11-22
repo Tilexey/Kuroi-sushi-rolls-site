@@ -921,6 +921,37 @@ img {
   transform: scale(1.02);
 }
 
+.hero-photo-caption {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  color: var(--ink-primary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(20, 19, 18, 0.09);
+  pointer-events: none;
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+@media (min-width: 640px) {
+  .hero-photo-caption {
+    left: 18px;
+    bottom: 18px;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 12px;
+  }
+}
+
+.hero-media-card:hover .hero-photo-caption {
+  transform: translateY(-2px);
+}
+
 /* Category Quick Strip */
 .category-strip-section {
   padding-bottom: 48px;
@@ -1137,6 +1168,34 @@ img {
 
 .dish-card:hover .dish-card-img-wrap img {
   transform: scale(1.045);
+}
+
+.dish-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(4px);
+  color: var(--ink-primary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 7px;
+  box-shadow: 0 2px 8px rgba(20, 19, 18, 0.08);
+  pointer-events: none;
+  line-height: 1.2;
+  transition: transform 0.28s var(--ease-out-expo);
+}
+
+.dish-badge.is-spicy {
+  color: var(--accent-red);
+}
+
+.dish-card:hover .dish-badge {
+  transform: translateY(-1px);
 }
 
 .dish-card-body {

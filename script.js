@@ -29,6 +29,7 @@ const MENU_ITEMS = [
     price: 18.0,
     image: './assets/images/salmon_signature.jpg',
     modalImage: './assets/images/salmon_signature_modal.jpg',
+    badge: 'HIT',
     kicker: 'SIGNATURE ROLLS / HIT',
     category: 'Rolls',
     tags: [],
@@ -49,6 +50,7 @@ const MENU_ITEMS = [
       'Tempura fried to order in light rice-bran oil so every piece arrives warm and crisp.',
     price: 22.0,
     image: './assets/images/green_dragon.jpg',
+    badge: "CHEF'S PICK",
     kicker: "SIGNATURE ROLLS / CHEF'S PICK",
     category: 'Rolls',
     tags: [],
@@ -69,6 +71,7 @@ const MENU_ITEMS = [
       'Broiled to order in small ceramic trays for a rich, smoky finish over seasoned sushi rice.',
     price: 20.0,
     image: './assets/images/baked_scallop.jpg',
+    badge: 'SPICY',
     kicker: 'BAKED ROLLS / SPICY',
     category: 'Baked rolls',
     tags: ['Spicy', 'Baked'],
@@ -89,6 +92,8 @@ const MENU_ITEMS = [
       'Balanced with toasted white sesame and crisp nori harvested from Ariake Bay.',
     price: 14.0,
     image: './assets/images/garden_roll.jpg',
+    badge: 'VEGETARIAN',
+    homeBadge: 'PLANT BASED',
     kicker: 'PLANT BASED / VEGETARIAN',
     category: 'Rolls',
     tags: ['Vegetarian'],
@@ -109,6 +114,7 @@ const MENU_ITEMS = [
       'Sliced by hand right before packing to preserve silky texture and clean ocean sweetness.',
     price: 9.0,
     image: './assets/images/salmon_nigiri.jpg',
+    badge: 'CLASSIC',
     kicker: 'NIGIRI / CLASSIC',
     category: 'Nigiri',
     tags: [],
@@ -128,6 +134,7 @@ const MENU_ITEMS = [
       'Finished with shichimi togarashi and toasted sesame for a clean, lingering warmth.',
     price: 19.0,
     image: './assets/images/spicy_tuna.jpg',
+    badge: 'SPICY',
     kicker: 'SIGNATURE ROLLS / SPICY',
     category: 'Rolls',
     tags: ['Spicy'],
@@ -147,6 +154,7 @@ const MENU_ITEMS = [
       'A comforting warm roll glazed with slow-simmered tare and toasted sesame seeds.',
     price: 20.0,
     image: './assets/images/baked_salmon.jpg',
+    badge: 'NEW',
     kicker: 'BAKED ROLLS / NEW',
     category: 'Baked rolls',
     tags: ['Baked', 'New'],
@@ -166,6 +174,7 @@ const MENU_ITEMS = [
       'Packed separately from warm dipping sauces so every bite keeps its delicate crunch.',
     price: 18.0,
     image: './assets/images/crispy_shrimp.jpg',
+    badge: 'HIT',
     kicker: 'SIGNATURE ROLLS / HIT',
     category: 'Rolls',
     tags: [],
@@ -185,6 +194,7 @@ const MENU_ITEMS = [
       'Includes two pairs of bamboo chopsticks, house-brewed soy sauce, pickled ginger, and fresh wasabi.',
     price: 49.0,
     image: './assets/images/hero_platter.jpg',
+    badge: 'SAVE 10%',
     kicker: 'COMBO SETS / SHARING BOX',
     category: 'Sets',
     tags: ['New'],
@@ -204,6 +214,7 @@ const MENU_ITEMS = [
       'Prepared in sequence so chilled nigiri and warm baked rolls arrive at ideal serving temperatures.',
     price: 44.0,
     image: './assets/images/baked_salmon.jpg',
+    badge: 'COMBO',
     kicker: 'COMBO SETS / CHEF CURATED',
     category: 'Sets',
     tags: ['Baked', 'Spicy'],
@@ -223,6 +234,7 @@ const MENU_ITEMS = [
       'Zero refined sugar — crisp, floral, and naturally refreshing alongside rich sushi rolls.',
     price: 4.0,
     image: './assets/images/yuzu_green_tea.jpg',
+    badge: 'HOUSE BREW',
     kicker: 'DRINKS / COLD BREW',
     category: 'Drinks',
     tags: ['Vegetarian', 'New'],
@@ -241,6 +253,7 @@ const MENU_ITEMS = [
     craftNote: 'Small-batch blended in-house for lower sodium and deeper umami.',
     price: 1.0,
     image: './assets/images/house_soy_sauce.jpg',
+    badge: 'PANTRY',
     kicker: 'DRINKS & PANTRY / CONDIMENT',
     category: 'Drinks',
     tags: ['Vegetarian'],
@@ -595,6 +608,7 @@ function renderImg(src, alt, className = '') {
 function renderDishCard(dish, variant = 'menu', index = 0) {
   const qty = getDishCartQuantity(dish.id);
   const delay = Math.min(index * 45, 220);
+  const badgeText = variant === 'home' && dish.homeBadge ? dish.homeBadge : dish.badge;
 
   const actionHtml =
     qty > 0
@@ -628,6 +642,11 @@ function renderDishCard(dish, variant = 'menu', index = 0) {
       <div>
         <div class="dish-card-img-wrap">
           ${renderImg(dish.image, `${dish.name} — ${dish.ingredients}`)}
+          ${
+            badgeText
+              ? `<span class="dish-badge ${badgeText === 'SPICY' ? 'is-spicy' : ''}">${escapeHtml(badgeText)}</span>`
+              : ''
+          }
         </div>
         <div class="dish-card-body">
           <h3 class="dish-card-title">${escapeHtml(dish.name)}</h3>
@@ -682,6 +701,7 @@ function renderHomeView(animate = true) {
 
           <div class="hero-media-card">
             ${renderImg('./assets/images/hero_platter.jpg', 'Handcrafted Kuroi Sushi platter with salmon nigiri and rolls')}
+            <div class="hero-photo-caption">Fresh fish. Every single day.</div>
           </div>
         </div>
       </section>
