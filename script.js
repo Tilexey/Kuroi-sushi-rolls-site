@@ -27,8 +27,8 @@ const MENU_ITEMS = [
     craftNote:
       'Rolled fresh for your order, with responsibly sourced Atlantic salmon and Japanese rice.',
     price: 18.0,
-    image: '/assets/images/salmon_signature.jpg',
-    modalImage: '/assets/images/salmon_signature_modal.jpg',
+    image: './assets/images/salmon_signature.jpg',
+    modalImage: './assets/images/salmon_signature_modal.jpg',
     kicker: 'SIGNATURE ROLLS / HIT',
     category: 'Rolls',
     tags: [],
@@ -48,7 +48,7 @@ const MENU_ITEMS = [
     craftNote:
       'Tempura fried to order in light rice-bran oil so every piece arrives warm and crisp.',
     price: 22.0,
-    image: '/assets/images/green_dragon.jpg',
+    image: './assets/images/green_dragon.jpg',
     kicker: "SIGNATURE ROLLS / CHEF'S PICK",
     category: 'Rolls',
     tags: [],
@@ -68,7 +68,7 @@ const MENU_ITEMS = [
     craftNote:
       'Broiled to order in small ceramic trays for a rich, smoky finish over seasoned sushi rice.',
     price: 20.0,
-    image: '/assets/images/baked_scallop.jpg',
+    image: './assets/images/baked_scallop.jpg',
     kicker: 'BAKED ROLLS / SPICY',
     category: 'Baked rolls',
     tags: ['Spicy', 'Baked'],
@@ -88,7 +88,7 @@ const MENU_ITEMS = [
     craftNote:
       'Balanced with toasted white sesame and crisp nori harvested from Ariake Bay.',
     price: 14.0,
-    image: '/assets/images/garden_roll.jpg',
+    image: './assets/images/garden_roll.jpg',
     kicker: 'PLANT BASED / VEGETARIAN',
     category: 'Rolls',
     tags: ['Vegetarian'],
@@ -108,7 +108,7 @@ const MENU_ITEMS = [
     craftNote:
       'Sliced by hand right before packing to preserve silky texture and clean ocean sweetness.',
     price: 9.0,
-    image: '/assets/images/salmon_nigiri.jpg',
+    image: './assets/images/salmon_nigiri.jpg',
     kicker: 'NIGIRI / CLASSIC',
     category: 'Nigiri',
     tags: [],
@@ -127,7 +127,7 @@ const MENU_ITEMS = [
     craftNote:
       'Finished with shichimi togarashi and toasted sesame for a clean, lingering warmth.',
     price: 19.0,
-    image: '/assets/images/spicy_tuna.jpg',
+    image: './assets/images/spicy_tuna.jpg',
     kicker: 'SIGNATURE ROLLS / SPICY',
     category: 'Rolls',
     tags: ['Spicy'],
@@ -146,7 +146,7 @@ const MENU_ITEMS = [
     craftNote:
       'A comforting warm roll glazed with slow-simmered tare and toasted sesame seeds.',
     price: 20.0,
-    image: '/assets/images/baked_salmon.jpg',
+    image: './assets/images/baked_salmon.jpg',
     kicker: 'BAKED ROLLS / NEW',
     category: 'Baked rolls',
     tags: ['Baked', 'New'],
@@ -165,7 +165,7 @@ const MENU_ITEMS = [
     craftNote:
       'Packed separately from warm dipping sauces so every bite keeps its delicate crunch.',
     price: 18.0,
-    image: '/assets/images/crispy_shrimp.jpg',
+    image: './assets/images/crispy_shrimp.jpg',
     kicker: 'SIGNATURE ROLLS / HIT',
     category: 'Rolls',
     tags: [],
@@ -184,7 +184,7 @@ const MENU_ITEMS = [
     craftNote:
       'Includes two pairs of bamboo chopsticks, house-brewed soy sauce, pickled ginger, and fresh wasabi.',
     price: 49.0,
-    image: '/assets/images/hero_platter.jpg',
+    image: './assets/images/hero_platter.jpg',
     kicker: 'COMBO SETS / SHARING BOX',
     category: 'Sets',
     tags: ['New'],
@@ -203,7 +203,7 @@ const MENU_ITEMS = [
     craftNote:
       'Prepared in sequence so chilled nigiri and warm baked rolls arrive at ideal serving temperatures.',
     price: 44.0,
-    image: '/assets/images/baked_salmon.jpg',
+    image: './assets/images/baked_salmon.jpg',
     kicker: 'COMBO SETS / CHEF CURATED',
     category: 'Sets',
     tags: ['Baked', 'Spicy'],
@@ -222,7 +222,7 @@ const MENU_ITEMS = [
     craftNote:
       'Zero refined sugar — crisp, floral, and naturally refreshing alongside rich sushi rolls.',
     price: 4.0,
-    image: '/assets/images/yuzu_green_tea.jpg',
+    image: './assets/images/yuzu_green_tea.jpg',
     kicker: 'DRINKS / COLD BREW',
     category: 'Drinks',
     tags: ['Vegetarian', 'New'],
@@ -240,7 +240,7 @@ const MENU_ITEMS = [
       'Our signature mellowed soy sauce infused gently with kombu kelp and mirin for dipping nigiri and rolls.',
     craftNote: 'Small-batch blended in-house for lower sodium and deeper umami.',
     price: 1.0,
-    image: '/assets/images/house_soy_sauce.jpg',
+    image: './assets/images/house_soy_sauce.jpg',
     kicker: 'DRINKS & PANTRY / CONDIMENT',
     category: 'Drinks',
     tags: ['Vegetarian'],
@@ -257,7 +257,7 @@ const CART_ADDONS = [
     name: 'House soy sauce',
     size: '30ml',
     price: 1.0,
-    image: '/assets/images/house_soy_sauce.jpg',
+    image: './assets/images/house_soy_sauce.jpg',
   },
   {
     id: 'addon-yuzu',
@@ -265,7 +265,7 @@ const CART_ADDONS = [
     name: 'Yuzu green tea',
     size: '330ml',
     price: 4.0,
-    image: '/assets/images/yuzu_green_tea.jpg',
+    image: './assets/images/yuzu_green_tea.jpg',
   },
   {
     id: 'addon-nigiri',
@@ -273,7 +273,7 @@ const CART_ADDONS = [
     name: 'Salmon nigiri',
     size: '2 pcs',
     price: 9.0,
-    image: '/assets/images/salmon_nigiri.jpg',
+    image: './assets/images/salmon_nigiri.jpg',
   },
   {
     id: 'addon-garden',
@@ -281,7 +281,7 @@ const CART_ADDONS = [
     name: 'Garden roll',
     size: '8 pcs',
     price: 14.0,
-    image: '/assets/images/garden_roll.jpg',
+    image: './assets/images/garden_roll.jpg',
   },
 ];
 
@@ -681,7 +681,7 @@ function renderHomeView(animate = true) {
           </div>
 
           <div class="hero-media-card">
-            ${renderImg('/assets/images/hero_platter.jpg', 'Handcrafted Kuroi Sushi platter with salmon nigiri and rolls')}
+            ${renderImg('./assets/images/hero_platter.jpg', 'Handcrafted Kuroi Sushi platter with salmon nigiri and rolls')}
           </div>
         </div>
       </section>
@@ -730,7 +730,7 @@ function renderHomeView(animate = true) {
       <section class="container craft-section reveal-on-scroll" id="our-craft">
         <div class="craft-grid">
           <div class="craft-media">
-            ${renderImg('/assets/images/craft_chef.jpg', 'Sushi chef shaping salmon nigiri by hand')}
+            ${renderImg('./assets/images/craft_chef.jpg', 'Sushi chef shaping salmon nigiri by hand')}
           </div>
 
           <div class="craft-content">
