@@ -4,18 +4,285 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KUROI SUSHI — Fresh Handcrafted Rolls &amp; Delivery</title>
-    <meta name="description" content="A little Japan. A lot of flavor. Handcrafted sushi, nigiri, baked rolls, and chef sets made to order and delivered in 35 minutes." />
+    <meta
+      name="description"
+      content="A little Japan. A lot of flavor. Handcrafted sushi, nigiri, baked rolls, and chef sets made to order and delivered in 35 minutes."
+    />
     <meta property="og:title" content="KUROI SUSHI — Fresh Handcrafted Rolls &amp; Delivery" />
-    <meta property="og:description" content="A little Japan. A lot of flavor. Handcrafted sushi, nigiri, baked rolls, and chef sets made to order and delivered in 35 minutes." />
+    <meta
+      property="og:description"
+      content="A little Japan. A lot of flavor. Handcrafted sushi, nigiri, baked rolls, and chef sets made to order and delivered in 35 minutes."
+    />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="app-shell">
+      <!-- Top Navigation Bar -->
+      <header class="site-header" id="site-header">
+        <div class="container header-inner">
+          <!-- Brand Mark -->
+          <button
+            type="button"
+            class="brand-btn"
+            data-nav="home"
+            aria-label="Kuroi Sushi Home"
+          >
+            <span class="brand-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 7h16" />
+                <path d="M7 7v11" />
+                <path d="M17 7v11" />
+                <path d="M5 11h14" />
+              </svg>
+            </span>
+            <span class="brand-text">
+              <span class="brand-title">KUROI</span>
+              <span class="brand-subtitle">SUSHI &amp; ROLLS</span>
+            </span>
+          </button>
+
+          <!-- Desktop Nav Links -->
+          <nav class="desktop-nav" aria-label="Primary Navigation">
+            <button type="button" class="nav-link" data-nav="menu" data-category="All menu">
+              Menu
+            </button>
+            <button type="button" class="nav-link" data-nav="menu" data-category="Sets">
+              Combos
+            </button>
+            <button type="button" class="nav-link" data-nav="cart">
+              Delivery
+            </button>
+            <button type="button" class="nav-link" data-nav="home" data-scroll="our-craft">
+              About
+            </button>
+          </nav>
+
+          <!-- Right Actions -->
+          <div class="header-actions">
+            <!-- Neighborhood Selector (Desktop) -->
+            <div class="dropdown-wrap desktop-only" id="neighborhood-dropdown">
+              <button
+                type="button"
+                class="location-trigger"
+                id="location-trigger"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+              >
+                <span class="location-label" id="selected-neighborhood-label">
+                  Downtown, New York
+                </span>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+
+              <div class="dropdown-menu" id="location-menu" role="listbox" aria-label="Delivery Area">
+                <div class="dropdown-heading">Delivery Area</div>
+                <div id="location-options"></div>
+              </div>
+            </div>
+
+            <!-- Cart CTA -->
+            <button
+              type="button"
+              class="cart-cta"
+              id="header-cart-btn"
+              data-nav="cart"
+              aria-label="Open cart"
+            >
+              <svg class="cart-bag-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                <path d="M3 6h18" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              <span class="cart-cta-label">
+                <span class="cart-word">Cart</span>
+                <span class="cart-dot">·</span>
+                <span class="tabular-nums cart-count-val" id="header-cart-count">3</span>
+              </span>
+              <span class="cart-cta-total tabular-nums" id="header-cart-subtotal">$54.00</span>
+            </button>
+
+            <!-- Mobile Menu Hamburger -->
+            <button
+              type="button"
+              class="mobile-menu-btn"
+              id="mobile-menu-open"
+              aria-label="Open navigation menu"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="4" x2="20" y1="6" y2="6" stroke-linecap="round" />
+                <line x1="4" x2="20" y1="12" y2="12" stroke-linecap="round" />
+                <line x1="4" x2="20" y1="18" y2="18" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Mobile Slide-Over Navigation Drawer -->
+      <div class="mobile-drawer-overlay" id="mobile-drawer" aria-hidden="true">
+        <div class="drawer-backdrop" id="mobile-drawer-backdrop"></div>
+        <aside class="drawer-panel" aria-label="Mobile menu">
+          <div class="drawer-top">
+            <div class="drawer-header">
+              <div>
+                <div class="drawer-brand">KUROI SUSHI</div>
+                <div class="drawer-sub">128 Spring Street, NYC</div>
+              </div>
+              <button
+                type="button"
+                class="icon-circle-btn"
+                id="mobile-menu-close"
+                aria-label="Close menu"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6 6 18" stroke-linecap="round" />
+                  <path d="m6 6 12 12" stroke-linecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            <nav class="drawer-nav">
+              <button type="button" class="drawer-nav-btn" data-nav="home">Home</button>
+              <button type="button" class="drawer-nav-btn" data-nav="menu" data-category="All menu">
+                Full Menu
+              </button>
+              <button type="button" class="drawer-nav-btn" data-nav="menu" data-category="Sets">
+                Combo Sets
+              </button>
+              <button type="button" class="drawer-nav-btn drawer-cart-row" data-nav="cart">
+                <span>Your Cart &amp; Delivery</span>
+                <span class="tabular-nums drawer-cart-summary" id="drawer-cart-summary">
+                  3 · $54.00
+                </span>
+              </button>
+              <button type="button" class="drawer-nav-btn" data-nav="home" data-scroll="our-craft">
+                Our Craft
+              </button>
+            </nav>
+
+            <div class="drawer-neighborhoods">
+              <p class="eyebrow-muted">Delivery Neighborhood</p>
+              <div class="drawer-area-list" id="mobile-location-options"></div>
+            </div>
+          </div>
+
+          <div class="drawer-footer">
+            <p class="drawer-footer-title">Delivered fresh in 35 minutes</p>
+            <p class="drawer-footer-sub">Free delivery on orders $50+ · Sun–Thu 11am–10pm</p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Main Dynamic View Root -->
+      <main class="main-content" id="app-main"></main>
+
+      <!-- Site Footer -->
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div class="footer-grid">
+            <div class="footer-brand-col">
+              <button type="button" class="footer-brand-btn" data-nav="home">
+                KUROI SUSHI
+              </button>
+              <p class="footer-tagline">A little Japan. A lot of flavor.</p>
+            </div>
+
+            <div>
+              <p class="footer-heading">VISIT US</p>
+              <p class="footer-copy">
+                128 Spring Street<br />
+                New York, NY 10012
+              </p>
+            </div>
+
+            <div>
+              <p class="footer-heading">OPEN EVERY DAY</p>
+              <p class="footer-copy tabular-nums">
+                Sunday–Thursday: 11am–10pm<br />
+                Friday–Saturday: 11am–11pm
+              </p>
+            </div>
+
+            <div>
+              <p class="footer-heading">LET&apos;S STAY IN TOUCH</p>
+              <div class="footer-links">
+                <a href="#instagram" class="footer-link-arrow" data-nav="menu" data-category="All menu">
+                  <span>Instagram</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17 17 7" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M7 7h10v10" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+                <p class="footer-phone tabular-nums">
+                  <a href="tel:+12125550198">+1 (212) 555-0198</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-bottom">
+            <p>© 2025 Kuroi Sushi</p>
+            <p>Delivery within 5 miles · Free on orders $50+</p>
+            <div class="footer-legal">
+              <button type="button" id="btn-privacy">Privacy policy</button>
+              <button type="button" id="btn-terms">Terms &amp; conditions</button>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div
+      class="modal-overlay"
+      id="product-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-dish-title"
+      aria-hidden="true"
+    >
+      <div class="modal-backdrop" id="product-modal-backdrop"></div>
+      <div class="modal-dialog product-modal-dialog" id="product-modal-dialog"></div>
+    </div>
+
+    <!-- Legal Info Modal -->
+    <div
+      class="modal-overlay"
+      id="legal-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="legal-modal-title"
+      aria-hidden="true"
+    >
+      <div class="modal-backdrop" id="legal-modal-backdrop"></div>
+      <div class="modal-dialog legal-modal-dialog" id="legal-modal-dialog"></div>
+    </div>
+
+    <!-- Floating Toast Notification -->
+    <div class="toast-banner" id="toast-banner" role="status" aria-live="polite" aria-hidden="true">
+      <svg class="toast-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span id="toast-message">Added to cart</span>
+    </div>
+
+    <script type="module" src="/script.js"></script>
   </body>
 </html>
-
