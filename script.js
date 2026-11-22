@@ -338,14 +338,38 @@ const ICONS = {
   checkCircle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
-// Application State
-const state = {
-  view: 'home',
-  category: 'All menu',
-  selectedTags: [],
-  sortBy: 'popular',
-  neighborhood: NEIGHBORHOODS[0],
-  cart: ['salmon-signature', 'green-dragon', 'garden-roll'].map((id) => {
+const STORAGE_KEYS = {
+  cart: 'kuroi_cart_v1',
+  neighborhood: 'kuroi_neighborhood_v1',
+  chopsticks: 'kuroi_chopsticks_v1',
+};
+
+function detectCurrentPage() {
+  const bodyPage = document.body?.dataset?.page;
+  if (bodyPage === 'home' || bodyPage === 'menu' || bodyPage === 'cart') {
+    return bodyPage;
+  }
+  const pathname = window.location.pathname.toLowerCase();
+  if (pathname.endsWith('menu.html')) return 'menu';
+  if (pathname.endsWith('cart.html')) return 'cart';
+  return 'home';
+}
+
+function getCategoryFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('category');
+    if (cat && MENU_TABS.includes(cat)) {
+      return cat;
+    }
+  } catch {
+    // Ignore malformed query string
+  }
+  return 'All menu';
+}
+
+function getDefaultCart() {
+  return ['salmon-signature', 'green-dragon', 'garden-roll'].map((id) => {
     const dish = MENU_ITEMS.find((m) => m.id === id);
     return {
       cartKey: dish.id,
@@ -357,8 +381,98 @@ const state = {
       quantity: 1,
       extras: [],
     };
-  }),
-  chopsticks: 2,
+  });
+}
+
+function loadSavedCart() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEYS.cart);
+    if (raw === null) {
+      const defaults = getDefaultCart();
+      window.localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(defaults));
+      return defaults;
+    }
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.filter(
+        (item) =>
+          item &&
+          typeof item.cartKey === 'string' &&
+          typeof item.dishId === 'string' &&
+          typeof item.unitPrice === 'number' &&
+          typeof item.quantity === 'number' &&
+          item.quantity > 0
+      );
+    }
+  } catch {
+    // Fallback if localStorage is unavailable
+  }
+  return getDefaultCart();
+}
+
+function loadSavedNeighborhood() {
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEYS.neighborhood);
+    if (saved && NEIGHBORHOODS.includes(saved)) {
+      return saved;
+    }
+  } catch {
+    // Ignore storage error
+  }
+  return NEIGHBORHOODS[0];
+}
+
+function loadSavedChopsticks() {
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEYS.chopsticks);
+    if (saved !== null) {
+      const n = Number(saved);
+      if (Number.isFinite(n) && n >= 0) return Math.floor(n);
+    }
+  } catch {
+    // Ignore storage error
+  }
+  return 2;
+}
+
+function saveCart() {
+  try {
+    window.localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(state.cart));
+  } catch {
+    // Ignore storage quota / privacy mode errors
+  }
+}
+
+function saveNeighborhood() {
+  try {
+    window.localStorage.setItem(STORAGE_KEYS.neighborhood, state.neighborhood);
+  } catch {
+    // Ignore storage error
+  }
+}
+
+function saveChopsticks() {
+  try {
+    window.localStorage.setItem(STORAGE_KEYS.chopsticks, String(state.chopsticks));
+  } catch {
+    // Ignore storage error
+  }
+}
+
+function getMenuPageUrl(category = 'All menu') {
+  if (!category || category === 'All menu') return './menu.html';
+  return `./menu.html?category=${encodeURIComponent(category)}`;
+}
+
+// Application State
+const state = {
+  view: detectCurrentPage(),
+  category: getCategoryFromUrl(),
+  selectedTags: [],
+  sortBy: 'popular',
+  neighborhood: loadSavedNeighborhood(),
+  cart: loadSavedCart(),
+  chopsticks: loadSavedChopsticks(),
   fulfillment: 'delivery',
   deliveryTimeMode: 'asap',
   scheduledSlot: TIME_SLOTS[2],
@@ -383,6 +497,7 @@ const state = {
 let toastTimer = null;
 
 // DOM References
+const appShell = document.querySelector('.app-shell');
 const appMain = document.getElementById('app-main');
 const headerCartCount = document.getElementById('header-cart-count');
 const headerCartSubtotal = document.getElementById('header-cart-subtotal');
@@ -445,26 +560,26 @@ function updateHeaderUI(animateCount = false) {
   }
 
   // Highlight active desktop nav link
-  document.querySelectorAll('.desktop-nav .nav-link').forEach((btn) => {
-    const navTarget = btn.getAttribute('data-nav');
-    const navCat = btn.getAttribute('data-category');
+  document.querySelectorAll('.desktop-nav .nav-link').forEach((link) => {
+    const navPage = link.getAttribute('data-nav-page');
     const isActive =
-      (state.view === 'menu' && navTarget === 'menu' && (navCat === state.category || (navCat === 'All menu' && state.category !== 'Sets'))) ||
-      (state.view === 'cart' && navTarget === 'cart');
-    btn.classList.toggle('is-active', Boolean(isActive));
+      (state.view === 'menu' &&
+        ((navPage === 'combos' && state.category === 'Sets') ||
+          (navPage === 'menu' && state.category !== 'Sets'))) ||
+      (state.view === 'cart' && navPage === 'cart');
+    link.classList.toggle('is-active', Boolean(isActive));
   });
 
   // Highlight active mobile drawer nav link
-  document.querySelectorAll('.drawer-nav-btn').forEach((btn) => {
-    const navTarget = btn.getAttribute('data-nav');
-    const navCat = btn.getAttribute('data-category');
-    const hasScroll = btn.hasAttribute('data-scroll');
+  document.querySelectorAll('.drawer-nav-btn').forEach((link) => {
+    const navPage = link.getAttribute('data-nav-page');
     const isActive =
-      !hasScroll &&
-      ((state.view === 'home' && navTarget === 'home') ||
-        (state.view === 'menu' && navTarget === 'menu' && (navCat === state.category || (navCat === 'All menu' && state.category !== 'Sets'))) ||
-        (state.view === 'cart' && navTarget === 'cart'));
-    btn.classList.toggle('is-active', Boolean(isActive));
+      (state.view === 'home' && navPage === 'home') ||
+      (state.view === 'menu' &&
+        ((navPage === 'combos' && state.category === 'Sets') ||
+          (navPage === 'menu' && state.category !== 'Sets'))) ||
+      (state.view === 'cart' && navPage === 'cart');
+    link.classList.toggle('is-active', Boolean(isActive));
   });
 
   renderNeighborhoodMenus();
@@ -535,6 +650,7 @@ function addToCart(dish, quantity = 1, extras = []) {
     });
   }
 
+  saveCart();
   updateHeaderUI(true);
   showToast(`Added ${dish.name} to cart`);
 }
@@ -543,6 +659,7 @@ function incrementDish(dishId) {
   const item = state.cart.find((i) => i.dishId === dishId);
   if (item) {
     item.quantity += 1;
+    saveCart();
     updateHeaderUI(true);
   }
 }
@@ -555,6 +672,7 @@ function decrementDish(dishId) {
   } else {
     state.cart[idx].quantity -= 1;
   }
+  saveCart();
   updateHeaderUI(true);
 }
 
@@ -565,37 +683,27 @@ function updateCartKeyQty(cartKey, delta) {
   if (state.cart[idx].quantity <= 0) {
     state.cart.splice(idx, 1);
   }
+  saveCart();
   updateHeaderUI(true);
 }
 
 function removeCartKey(cartKey) {
   state.cart = state.cart.filter((i) => i.cartKey !== cartKey);
+  saveCart();
   updateHeaderUI(true);
 }
 
-// Navigation
-function navigateTo(view, category = null, scrollTarget = null) {
-  const viewChanged = state.view !== view;
-  if (category) {
-    state.category = category;
-  }
-  state.view = view;
-  if (view !== 'cart') {
-    state.orderConfirmation = null;
-  }
-
+// Multi-page smooth page transition
+function navigateWithTransition(href) {
   closeMobileDrawer();
   closeLocationDropdown();
-  renderCurrentView(viewChanged);
-  updateHeaderUI(false);
-
-  if (scrollTarget) {
+  if (appShell) {
+    appShell.classList.add('is-leaving');
     setTimeout(() => {
-      const el = document.getElementById(scrollTarget);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 80);
+      window.location.href = href;
+    }, 150);
   } else {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.location.href = href;
   }
 }
 
@@ -691,10 +799,10 @@ function renderHomeView(animate = true) {
               Beautiful ingredients. Handcrafted rolls. Your favorite ritual, delivered in 35 minutes.
             </p>
             <div class="hero-cta-wrap">
-              <button type="button" class="btn-primary-red" data-nav="menu" data-category="All menu">
+              <a href="./menu.html" class="btn-primary-red">
                 <span>Explore Menu</span>
                 ${ICONS.arrowRight}
-              </button>
+              </a>
               <span class="hero-subnote">Made to order. Made for you.</span>
             </div>
           </div>
@@ -713,15 +821,13 @@ function renderHomeView(animate = true) {
           ${homeCategories
             .map(
               (cat) => `
-              <button
-                type="button"
+              <a
+                href="${escapeHtml(getMenuPageUrl(cat.value))}"
                 class="category-pill-btn ${cat.dark ? 'is-dark' : ''}"
-                data-nav="menu"
-                data-category="${cat.value}"
               >
                 <span>${cat.label}</span>
                 ${cat.dark ? ICONS.arrowUpRight : ''}
-              </button>
+              </a>
             `
             )
             .join('')}
@@ -735,10 +841,10 @@ function renderHomeView(animate = true) {
             <p class="eyebrow-red">CHEF&apos;S SPECIALS / POPULAR</p>
             <h2 class="section-title">The ones you come back for.</h2>
           </div>
-          <button type="button" class="link-arrow-btn" data-nav="menu" data-category="All menu">
+          <a href="./menu.html" class="link-arrow-btn">
             <span>View full menu</span>
             ${ICONS.arrowUpRight}
-          </button>
+          </a>
         </div>
 
         <div class="dish-grid">
@@ -785,10 +891,10 @@ function renderHomeView(animate = true) {
             <p class="promo-sub">
               Discover our combo sets. Join Kuroi Club and earn 5% back on every order.
             </p>
-            <button type="button" class="btn-promo-white" data-nav="menu" data-category="Sets">
+            <a href="./menu.html?category=Sets" class="btn-promo-white">
               <span>Find your combo</span>
               ${ICONS.arrowUpRight}
-            </button>
+            </a>
           </div>
 
           <div class="promo-stat-block">
@@ -831,7 +937,7 @@ function renderMenuView(animate = true) {
   appMain.innerHTML = `
     <section class="container page-section ${animate ? 'view-enter' : ''}">
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <button type="button" class="breadcrumb-link" data-nav="home">HOME</button>
+        <a href="./index.html" class="breadcrumb-link">HOME</a>
         <span class="breadcrumb-sep">/</span>
         <span class="breadcrumb-current">MENU</span>
       </nav>
@@ -981,8 +1087,8 @@ function renderCartView(animate = true) {
           </div>
 
           <div class="confirm-actions">
-            <button type="button" class="btn-primary-red" id="conf-browse-menu">Browse Menu</button>
-            <button type="button" class="btn-secondary-warm" id="conf-back-home">Back to Home</button>
+            <a href="./menu.html" class="btn-primary-red">Browse Menu</a>
+            <a href="./index.html" class="btn-secondary-warm">Back to Home</a>
           </div>
         </div>
       </section>
@@ -1010,7 +1116,7 @@ function renderCartView(animate = true) {
   appMain.innerHTML = `
     <section class="container page-section ${animate ? 'view-enter' : ''}">
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <button type="button" class="breadcrumb-link" data-nav="home">HOME</button>
+        <a href="./index.html" class="breadcrumb-link">HOME</a>
         <span class="breadcrumb-sep">/</span>
         <span class="breadcrumb-current">YOUR CART</span>
       </nav>
@@ -1020,10 +1126,10 @@ function renderCartView(animate = true) {
           <h1 class="page-title">Your next good meal.</h1>
           <span class="cart-count-sub tabular-nums">${count} ${count === 1 ? 'item' : 'items'}</span>
         </div>
-        <button type="button" class="link-arrow-btn link-red-arrow" data-nav="menu" data-category="All menu">
+        <a href="./menu.html" class="link-arrow-btn link-red-arrow">
           <span>Continue exploring</span>
           ${ICONS.arrowUpRight}
-        </button>
+        </a>
       </div>
 
       <div class="cart-layout-grid">
@@ -1078,9 +1184,9 @@ function renderCartView(animate = true) {
                   ${ICONS.bag}
                   <h2>Your bag is empty</h2>
                   <p>Explore our handcrafted rolls, nigiri, and combo sets to get started.</p>
-                  <button type="button" class="btn-primary-red" data-nav="menu" data-category="All menu">
+                  <a href="./menu.html" class="btn-primary-red">
                     Explore Menu
-                  </button>
+                  </a>
                 </div>`
           }
 
@@ -1552,15 +1658,43 @@ function setupScrollReveal() {
 document.addEventListener('click', (e) => {
   const target = e.target;
 
-  // Navigation buttons
-  const navBtn = target.closest('[data-nav]');
-  if (navBtn) {
-    e.preventDefault();
-    const view = navBtn.getAttribute('data-nav');
-    const cat = navBtn.getAttribute('data-category');
-    const scroll = navBtn.getAttribute('data-scroll');
-    navigateTo(view, cat, scroll);
-    return;
+  // Smooth in-page scroll links (e.g. About -> #our-craft on index.html)
+  const scrollTrigger = target.closest('[data-scroll]');
+  if (scrollTrigger) {
+    const scrollTargetId = scrollTrigger.getAttribute('data-scroll');
+    const el = scrollTargetId ? document.getElementById(scrollTargetId) : null;
+    if (el) {
+      e.preventDefault();
+      closeMobileDrawer();
+      closeLocationDropdown();
+      el.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+  }
+
+  // Smooth fade transition between internal HTML pages
+  const pageLink = target.closest('a[href]');
+  if (
+    pageLink &&
+    e.button === 0 &&
+    !e.metaKey &&
+    !e.ctrlKey &&
+    !e.shiftKey &&
+    !e.altKey &&
+    pageLink.target !== '_blank'
+  ) {
+    const rawHref = pageLink.getAttribute('href') || '';
+    if (
+      rawHref &&
+      !rawHref.startsWith('#') &&
+      !rawHref.startsWith('tel:') &&
+      !rawHref.startsWith('mailto:') &&
+      !rawHref.startsWith('http')
+    ) {
+      e.preventDefault();
+      navigateWithTransition(pageLink.href);
+      return;
+    }
   }
 
   // Location dropdown trigger
@@ -1574,6 +1708,7 @@ document.addEventListener('click', (e) => {
   const areaBtn = target.closest('[data-select-area]');
   if (areaBtn) {
     state.neighborhood = areaBtn.getAttribute('data-select-area');
+    saveNeighborhood();
     closeLocationDropdown();
     updateHeaderUI(false);
     return;
@@ -1593,6 +1728,11 @@ document.addEventListener('click', (e) => {
   const menuTab = target.closest('[data-menu-tab]');
   if (menuTab) {
     state.category = menuTab.getAttribute('data-menu-tab');
+    try {
+      window.history.replaceState(null, '', getMenuPageUrl(state.category));
+    } catch {
+      // Ignore history errors under file://
+    }
     renderMenuView(false);
     updateHeaderUI(false);
     return;
@@ -1620,7 +1760,13 @@ document.addEventListener('click', (e) => {
   if (target.closest('#reset-all-filters')) {
     state.selectedTags = [];
     state.category = 'All menu';
+    try {
+      window.history.replaceState(null, '', getMenuPageUrl(state.category));
+    } catch {
+      // Ignore history errors under file://
+    }
     renderMenuView(false);
+    updateHeaderUI(false);
     return;
   }
 
@@ -1745,12 +1891,14 @@ document.addEventListener('click', (e) => {
 
   if (target.closest('#chopsticks-dec')) {
     state.chopsticks = Math.max(0, state.chopsticks - 1);
+    saveChopsticks();
     renderCartView(false);
     return;
   }
 
   if (target.closest('#chopsticks-inc')) {
     state.chopsticks += 1;
+    saveChopsticks();
     renderCartView(false);
     return;
   }
@@ -1799,18 +1947,6 @@ document.addEventListener('click', (e) => {
   if (timeModeBtn) {
     state.deliveryTimeMode = timeModeBtn.getAttribute('data-time-mode');
     renderCartView(false);
-    return;
-  }
-
-  if (target.closest('#conf-browse-menu')) {
-    state.orderConfirmation = null;
-    navigateTo('menu', 'All menu');
-    return;
-  }
-
-  if (target.closest('#conf-back-home')) {
-    state.orderConfirmation = null;
-    navigateTo('home');
     return;
   }
 
@@ -1935,6 +2071,7 @@ document.addEventListener('submit', (e) => {
     };
 
     state.cart = [];
+    saveCart();
     updateHeaderUI(true);
     renderCartView(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1957,6 +2094,24 @@ window.addEventListener('resize', () => {
   }
 });
 
+window.addEventListener('pageshow', () => {
+  if (appShell) appShell.classList.remove('is-leaving');
+  state.view = detectCurrentPage();
+  state.category = getCategoryFromUrl();
+  state.cart = loadSavedCart();
+  state.neighborhood = loadSavedNeighborhood();
+  state.chopsticks = loadSavedChopsticks();
+  renderCurrentView(false);
+  updateHeaderUI(false);
+});
+
 // Initialize App
 renderCurrentView(true);
 updateHeaderUI(false);
+
+if (state.view === 'home' && window.location.hash === '#our-craft') {
+  setTimeout(() => {
+    const el = document.getElementById('our-craft');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }, 120);
+}

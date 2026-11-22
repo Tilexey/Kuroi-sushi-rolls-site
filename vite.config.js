@@ -25,6 +25,15 @@ export default defineConfig(() => {
         },
       },
     ],
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          menu: path.resolve(__dirname, 'menu.html'),
+          cart: path.resolve(__dirname, 'cart.html'),
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

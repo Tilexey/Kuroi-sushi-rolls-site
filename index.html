@@ -23,16 +23,15 @@
     />
     <link rel="stylesheet" href="./style.css" />
   </head>
-  <body>
+  <body data-page="home">
     <div class="app-shell">
       <!-- Top Navigation Bar -->
       <header class="site-header" id="site-header">
         <div class="container header-inner">
           <!-- Brand Mark -->
-          <button
-            type="button"
+          <a
+            href="./index.html"
             class="brand-btn"
-            data-nav="home"
             aria-label="Kuroi Sushi Home"
           >
             <span class="brand-icon" aria-hidden="true">
@@ -54,22 +53,22 @@
               <span class="brand-title">KUROI</span>
               <span class="brand-subtitle">SUSHI &amp; ROLLS</span>
             </span>
-          </button>
+          </a>
 
           <!-- Desktop Nav Links -->
           <nav class="desktop-nav" aria-label="Primary Navigation">
-            <button type="button" class="nav-link" data-nav="menu" data-category="All menu">
+            <a href="./menu.html" class="nav-link" data-nav-page="menu">
               Menu
-            </button>
-            <button type="button" class="nav-link" data-nav="menu" data-category="Sets">
+            </a>
+            <a href="./menu.html?category=Sets" class="nav-link" data-nav-page="combos">
               Combos
-            </button>
-            <button type="button" class="nav-link" data-nav="cart">
+            </a>
+            <a href="./cart.html" class="nav-link" data-nav-page="cart">
               Delivery
-            </button>
-            <button type="button" class="nav-link" data-nav="home" data-scroll="our-craft">
+            </a>
+            <a href="#our-craft" class="nav-link" data-nav-page="about" data-scroll="our-craft">
               About
-            </button>
+            </a>
           </nav>
 
           <!-- Right Actions -->
@@ -98,11 +97,10 @@
             </div>
 
             <!-- Cart CTA -->
-            <button
-              type="button"
+            <a
+              href="./cart.html"
               class="cart-cta"
               id="header-cart-btn"
-              data-nav="cart"
               aria-label="Open cart"
             >
               <svg class="cart-bag-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -116,7 +114,7 @@
                 <span class="tabular-nums cart-count-val" id="header-cart-count">3</span>
               </span>
               <span class="cart-cta-total tabular-nums" id="header-cart-subtotal">$54.00</span>
-            </button>
+            </a>
 
             <!-- Mobile Menu Hamburger -->
             <button
@@ -159,22 +157,22 @@
             </div>
 
             <nav class="drawer-nav">
-              <button type="button" class="drawer-nav-btn" data-nav="home">Home</button>
-              <button type="button" class="drawer-nav-btn" data-nav="menu" data-category="All menu">
+              <a href="./index.html" class="drawer-nav-btn is-active" data-nav-page="home">Home</a>
+              <a href="./menu.html" class="drawer-nav-btn" data-nav-page="menu">
                 Full Menu
-              </button>
-              <button type="button" class="drawer-nav-btn" data-nav="menu" data-category="Sets">
+              </a>
+              <a href="./menu.html?category=Sets" class="drawer-nav-btn" data-nav-page="combos">
                 Combo Sets
-              </button>
-              <button type="button" class="drawer-nav-btn drawer-cart-row" data-nav="cart">
+              </a>
+              <a href="./cart.html" class="drawer-nav-btn drawer-cart-row" data-nav-page="cart">
                 <span>Your Cart &amp; Delivery</span>
                 <span class="tabular-nums drawer-cart-summary" id="drawer-cart-summary">
                   3 · $54.00
                 </span>
-              </button>
-              <button type="button" class="drawer-nav-btn" data-nav="home" data-scroll="our-craft">
+              </a>
+              <a href="#our-craft" class="drawer-nav-btn" data-nav-page="about" data-scroll="our-craft">
                 Our Craft
-              </button>
+              </a>
             </nav>
 
             <div class="drawer-neighborhoods">
@@ -198,9 +196,9 @@
         <div class="container footer-inner">
           <div class="footer-grid">
             <div class="footer-brand-col">
-              <button type="button" class="footer-brand-btn" data-nav="home">
+              <a href="./index.html" class="footer-brand-btn">
                 KUROI SUSHI
-              </button>
+              </a>
               <p class="footer-tagline">A little Japan. A lot of flavor.</p>
             </div>
 
@@ -223,7 +221,7 @@
             <div>
               <p class="footer-heading">LET&apos;S STAY IN TOUCH</p>
               <div class="footer-links">
-                <a href="#instagram" class="footer-link-arrow" data-nav="menu" data-category="All menu">
+                <a href="./menu.html" class="footer-link-arrow">
                   <span>Instagram</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M7 17 17 7" stroke-linecap="round" stroke-linejoin="round" />
